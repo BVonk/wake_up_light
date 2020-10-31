@@ -9,7 +9,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "RTClib.h"
-#include <LiquidCrystal_I2C.h>
+#include "LCDDisplay.hpp"
 #include "AlarmClock.h"
 #include "Menu.h"
 #include "PushButton.hpp"
@@ -24,6 +24,7 @@ PushButton button2;
 PushButton button3;
 PushButton button4;
 Menu menu(RTC, alarmClock, button1, button2, button3, button4);
+LCDDisplay display;
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int alarmHours = 19, alarmMinutes = 38;
@@ -41,10 +42,7 @@ void setup() {
   button2.init(3, update_rate_ms);
   button3.init(4, update_rate_ms);
   button4.init(5, update_rate_ms);
-//  lcd.begin(16,2);
-//  lcd.backlight();
-//  lcd.backlight();
-//  lcd.clear();
+
   
 	// initialize digital pin LED_BUILTIN as an output.
 	Wire.begin();
@@ -68,6 +66,8 @@ void setup() {
   alarmClock.setAlarmTime(6, 5);
   alarmClock.setAlarmLength(1800);
   alarmClock.enableAlarm();
+
+  display.Init();
 }
 
 
@@ -102,29 +102,14 @@ void loop() {
     setLightBrightness(alarmClock.getAlarmProgress());
   }
 
-  
-//  lcd.setCursor(0, 1);
-//  lcd.print("Hour:");
-//  if (now.hour()<=9)
-//  {
-//    lcd.print("0");
-//  }
-//  lcd.print(now.hour(), DEC);
-//
-//  lcd.print(":");
-//  if (now.minute()<=9)
-//  {
-//    lcd.print("0");
-//  }
-//  lcd.print(now.minute(), DEC);
+  display.ShowTime(now.hour(), now.minute());
+
 
 //	digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
 //	delay(100);                       // wait for a second
 //	digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
 	delay(1000);                       // wait for a second
   now = RTC.now();
-//  print_time(now);
-
 }
 
 
