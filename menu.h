@@ -2,108 +2,85 @@
 #define ___MENU_INCLUDE__
 
 #include "Arduino.h"
-
-enum MenuIndex{
-  eCLOCK,
-  eDATE,
-  eALARMTIME,
-  eALARMONOFF,
-}
-
-enum ButtonIndex{
-  e0000,
-  e0001,
-  e0010,
-  e0011,
-  e0100,
-  e0101,
-  e0110,
-  e0111,
-  e1000,
-  e1001,
-  e1010,
-  e1011,
-  e1100,
-  e1101,
-  e1110,
-  e1111,
-}
+#include "RTClib.h"
+#include "alarm.h"
+#include "PushButton.hpp"
 
 class Menu
 {
 public:
-  Menu(Button& button_menu, Button& button_light, Button&, button_up, Button& button_down)
-  :button_menu_(button_menu)
-  ,button_light_(button_light)
-  ,button_up_(button_up)
-  ,button_down_(button_down)
-  ,index_(eCLOCK)
-  ,change_index(0)
-  ,brightness_(2)
-  {};
+  Menu(RTC_DS3231& RTC, AlarmClock& alarmClock, PushButton& button_menu, PushButton& button_light, PushButton& button_up, PushButton& button_down);
   ~Menu();
 
-  update()
-  {
-    switch case(index_)
-    {
-      case eCLOCK:
-        handleIndexClock();
-        break;
-      case eDATE:
-        handleIndexDate();
-        break;
-      case eALARMTIME:
-        handleIndexAlarmTime();
-        break;
-      case eALARMONOFF:
-        handleIndexAlarmOnOff();
-        break;
-    }
-  }
+  void update();
 
 private:
-  Button& button_menu_;
-  Button& button_light_;
-  Button& button_up_;
-  Button& button_down_;
+  PushButton& button_menu_;
+  PushButton& button_light_;
+  PushButton& button_up_;
+  PushButton& button_down_;
+  RTC_DS3231& RTC_;
+  AlarmClock& alarmClock_;
 
-  void incrementBrightness()
-  {
-    if(brightness_ = 4) brightness_ = 0;
-    else brightness++;
-  }
-
-  void incrementMenu()
-  {
-    if(index_ == eALARMONOFF) index_ = eCLOCK;
-    else index_++;
-  }
-
-  void handleIndexClock()
-  {
-    if(change_index_=0)
-    {
-      if(button_menu.getPressed())
-      {
-        incrementMenu();
-      }
-      if(button_menu.getTimePressed() < 2000)
-      {
-        incrementChangeIndex()
-      }
-    }
-  }
+  void incrementBrightness();
+  void incrementMenuIndex();
+  void incrementChangeTimeIndex();
+  void incrementChangeDateIndex();
   
+  void incrementHour();
+  void decrementHour();
+
+  void incrementMinute();
+  void decrementMinute();
+
+  void incrementYear();
+  void decrementYear();
+
+  void incrementMonth();
+  void decrementMonth();
+
+  void incrementDay();
+  void decrementDay();  
+  uint8_t calculateMaxDay();
+
+  void setTempDateTime();
+
+  void handleIndexClock();
   void handleIndexDate();
   void handleIndexAlarmTime();
   void handleIndexAlarmOnOff();
   
-  int index_;
-  int change_time_index_;
-  int change_date_index_;
-  int brightness_;
-}
+  uint8_t index_;
+  uint8_t change_time_index_;
+  uint8_t change_date_index_;
+  uint8_t brightness_;
+
+  uint8_t temp_hour_;
+  uint8_t temp_minute_;
+  uint8_t temp_day_;
+  uint8_t temp_month_;
+  uint16_t temp_year_;
+
+  enum MenuIndex{
+    eCLOCK,
+    eDATE,
+    eALARMTIME,
+    eALARMONOFF,
+  };
+  
+  enum TimeIndex{
+    eNOTIME,
+    eHOUR,
+    eMINUTE,
+  };
+  
+  enum DateIndex{
+    eNODATE,
+    eYEAR,
+    eMONTH,
+    eDAY,
+  };
+};
 
 
 #endif

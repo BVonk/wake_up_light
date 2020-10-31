@@ -10,7 +10,8 @@
 #include <Wire.h>
 #include "RTClib.h"
 #include <LiquidCrystal_I2C.h>
-#include "alarm.h"
+#include "AlarmClock.h"
+#include "Menu.h"
 #include "PushButton.hpp"
 
 
@@ -22,13 +23,13 @@ PushButton button1;
 PushButton button2;
 PushButton button3;
 PushButton button4;
+Menu menu(RTC, alarmClock, button1, button2, button3, button4);
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int alarmHours = 19, alarmMinutes = 38;
 int ledPin = 6;
 const uint16_t update_rate_ms = 20;
 
-int menu = 0;
 
 
 // the setup function runs once when you press reset or power the board
@@ -75,13 +76,13 @@ void loop() {
   DateTime now = RTC.now();
 
   // Check buttons pressed;
-//  button1.update();
-//  button2.update();
-//  button3.update();
-//  button4.update();
+  button1.update();
+  button2.update();
+  button3.update();
+  button4.update();
 
   // Update menu
-//  Menu.update();
+  menu.update();
 
   // Update alarm
 

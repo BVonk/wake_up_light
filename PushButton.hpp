@@ -1,3 +1,6 @@
+#ifndef ___PUSH_BUTTON_INCLUDE__
+#define ___PUSH_BUTTON_INCLUDE__
+
 #include <Arduino.h>
 
 class PushButton
@@ -19,4 +22,4 @@ private:
   uint16_t update_rate_ms_;
 };
 
-
+#endif
