@@ -30,6 +30,7 @@ void PushButton::update()
   {
     pressed=true;
     time_pressed_=0;
+    Serial.print("Button pressed\n");
   }
   else
   {

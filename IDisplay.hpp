@@ -6,9 +6,9 @@
 class IDisplay
 {
 public:
-    virtual ~IDisplay;
+   //  virtual ~IDisplay;
 
-    virtual void Init() = 0;
+    virtual void Init(uint16_t update_rate_ms) = 0;
     virtual void ShowTime(uint8_t hour, uint8_t minute) = 0;
     virtual void ShowDate(uint8_t day, uint8_t Month, uint16_t year) = 0;
     virtual void ShowAlarmOnOff(bool alarm_on) = 0;

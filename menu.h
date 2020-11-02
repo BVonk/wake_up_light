@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 #include "RTClib.h"
-#include "alarm.h"
+#include "AlarmClock.h"
 #include "PushButton.hpp"
 
 class Menu

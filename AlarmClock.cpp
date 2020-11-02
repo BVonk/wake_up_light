@@ -88,4 +88,3 @@ void AlarmClock::disableAlarm()
   alarm_set_ = false;
   alarm_progress_ = 0;
 }
-

@@ -10,12 +10,14 @@
 #include <Wire.h>
 #include "RTClib.h"
 #include "LCDDisplay.hpp"
+#include <LiquidCrystal_I2C.h>
 #include "AlarmClock.h"
 #include "Menu.h"
 #include "PushButton.hpp"
 
 
-LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+//LiquidCrystal lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 RTC_DS3231 RTC;
 //RTC_DS1307 RTC;
 AlarmClock alarmClock;
@@ -24,12 +26,12 @@ PushButton button2;
 PushButton button3;
 PushButton button4;
 Menu menu(RTC, alarmClock, button1, button2, button3, button4);
-LCDDisplay display;
+LCDDisplay display(lcd);
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int alarmHours = 19, alarmMinutes = 38;
 int ledPin = 6;
-const uint16_t update_rate_ms = 20;
+const uint16_t update_rate_ms = 50;
 
 
 
@@ -37,7 +39,7 @@ const uint16_t update_rate_ms = 20;
 void setup() {
   Serial.begin(9600);
   Serial.print("Startup\n");
-
+  
   button1.init(2, update_rate_ms);
   button2.init(3, update_rate_ms);
   button3.init(4, update_rate_ms);
@@ -54,6 +56,7 @@ void setup() {
   if (! RTC.begin()) {
     Serial.print("Couldn't find RTC\n");
   }
+  Serial.print("RTC Started\n");
   if (RTC.lostPower()) {
     Serial.print("RTC is NOT running!\n");
     // Set the date and time at compile time
@@ -61,13 +64,13 @@ void setup() {
   }
 //   RTC.adjust(DateTime(__DATE__, __TIME__)); //removing "//" to adjust the time
     // The default display shows the date and time
-
+  Serial.print("RTC Started\n");
   DateTime now = RTC.now();
-  alarmClock.setAlarmTime(6, 5);
+  alarmClock.setAlarmTime(6, 10);
   alarmClock.setAlarmLength(1800);
   alarmClock.enableAlarm();
-
-  display.Init();
+  print_time(now);
+  display.Init(update_rate_ms);
 }
 
 
@@ -105,11 +108,7 @@ void loop() {
   display.ShowTime(now.hour(), now.minute());
 
 
-//	digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-//	delay(100);                       // wait for a second
-//	digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-	delay(1000);                       // wait for a second
-  now = RTC.now();
+//  print_time(now);
 }
 
 
@@ -151,4 +150,3 @@ void print_time(DateTime now){
     Serial.print(now.second(), DEC);
     Serial.print("\n");
 }
-

@@ -1,66 +1,65 @@
 #include "LCDDisplay.hpp"
-#include <LiquidCrystal_I2C.h>
+//#include <LiquidCrystal_I2C.h>
 
 
-LCDDisplay::LCDDisplay()
+LCDDisplay::LCDDisplay(LiquidCrystal_I2C& display)
+:display_(display)
 {
-    display_ = LiquidCrystal_I2C(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
     update_rate_ms_ = 20;
 }
 
 LCDDisplay::~LCDDisplay()
 {}
 
-LCDDisplay::Init(update_rate_ms)
+void LCDDisplay::Init(uint16_t update_rate_ms)
 {
     update_rate_ms_ = update_rate_ms;
-    display.begin(16,2);
-    display.backlight();
-    display.backlight();
-    display.clear();
+    display_.init();
+    display_.backlight();
+    display_.clear();
 }
 
 void LCDDisplay::ShowTime(uint8_t hour, uint8_t minute)
 {
-    display.clear();
-    display.setCursor(0, 1);
-    // display.print("Hour:");
+//    display_.clear();
+    display_.setCursor(0, 1);
+    // display_.print("Hour:");
     if (hour<=9)
     {
-    display.print("0");
+    display_.print("0");
     }
-    display.print(hour, DEC);
+    display_.print(hour, DEC);
 
-    display.print(":");
+    display_.print(":");
     if (minute<=9)
     {
-    display.print("0");
+    display_.print("0");
     }
-    display.print(minute, DEC);
+    display_.print(minute, DEC);
 }
 
-void LCDDisplay::ShowDate(uint8_t day, uint8_t Month, uint16_t year)
+void LCDDisplay::ShowDate(uint8_t day, uint8_t month, uint16_t year)
 {
-    display.clear();
-    display.setCursor(0, 1);
-    display.print(day, DEC);
-    display.print("/");
-    display.print(month, DEC);
-    display.print("/");
-    display.print(year, DEC);
+    display_.clear();
+    display_.setCursor(0, 1);
+    display_.print(day, DEC);
+    display_.print("/");
+    display_.print(month, DEC);
+    display_.print("/");
+    display_.print(year, DEC);
 }
 
 void LCDDisplay::ShowAlarmOnOff(bool alarm_on)
 {
-    display.clear();
-    display.setCursor(0, 1);
+    display_.clear();
+    display_.setCursor(0, 1);
     if(alarm_on)
     {
-        display.print("Alarm on");
+        display_.print("Alarm on");
     }
     else
     {
-        display.print("Alarm off");
+        display_.print("Alarm off");
     }
     
 }
