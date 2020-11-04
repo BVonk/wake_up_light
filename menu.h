@@ -5,11 +5,12 @@
 #include "RTClib.h"
 #include "AlarmClock.h"
 #include "PushButton.hpp"
+#include "LCDDisplay.hpp"
 
 class Menu
 {
 public:
-  Menu(RTC_DS3231& RTC, AlarmClock& alarmClock, PushButton& button_menu, PushButton& button_light, PushButton& button_up, PushButton& button_down);
+  Menu(IDisplay& display, RTC_DS3231& RTC, AlarmClock& alarmClock, PushButton& button_menu, PushButton& button_light, PushButton& button_up, PushButton& button_down);
   ~Menu();
 
   void update();
@@ -21,6 +22,7 @@ private:
   PushButton& button_down_;
   RTC_DS3231& RTC_;
   AlarmClock& alarmClock_;
+  IDisplay& display_;
 
   void incrementBrightness();
   void incrementMenuIndex();
@@ -62,20 +64,20 @@ private:
   uint16_t temp_year_;
 
   enum MenuIndex{
-    eCLOCK,
+    eCLOCK=0,
     eDATE,
     eALARMTIME,
     eALARMONOFF,
   };
   
   enum TimeIndex{
-    eNOTIME,
+    eNOTIME=0,
     eHOUR,
     eMINUTE,
   };
   
   enum DateIndex{
-    eNODATE,
+    eNODATE=0,
     eYEAR,
     eMONTH,
     eDAY,

@@ -1,12 +1,13 @@
 #include "menu.h"
 
-Menu::Menu(RTC_DS3231& RTC, AlarmClock& alarmClock, PushButton& button_menu, PushButton& button_light, PushButton& button_up, PushButton& button_down)
+Menu::Menu(IDisplay& display, RTC_DS3231& RTC, AlarmClock& alarmClock, PushButton& button_menu, PushButton& button_light, PushButton& button_up, PushButton& button_down)
 :button_menu_(button_menu)
 ,button_light_(button_light)
 ,button_up_(button_up)
 ,button_down_(button_down)
 ,RTC_(RTC)
 ,alarmClock_(alarmClock)
+,display_(display)
 ,index_(0)
 ,change_time_index_(0)
 ,change_date_index_(0)
@@ -23,6 +24,14 @@ Menu::~Menu()
 
 void Menu::update()
 {
+  uint8_t temp_index_=index_;
+  Serial.print("Index ");
+  Serial.print(index_, DEC);
+  Serial.print(" ");
+  Serial.print(change_time_index_, DEC);
+  Serial.print("\n");
+ 
+  DateTime now = RTC_.now();
   switch (index_)
   {
     case eCLOCK:
@@ -38,6 +47,55 @@ void Menu::update()
       handleIndexAlarmOnOff();
       break;
   }
+
+  if(temp_index_!=index_)
+  {
+    display_.Clear();
+  }
+  
+  switch (index_)
+  {
+    case eCLOCK:
+      if(not change_time_index_) 
+      {
+        display_.NoBlink();
+        display_.ShowTime(now.hour(), now.minute());
+      }
+      else 
+      {
+        display_.Blink();
+        display_.ShowTime(temp_hour_, temp_minute_);
+      }
+      break;
+    case eDATE:
+      if(not change_date_index_) 
+      {
+        display_.NoBlink();
+        display_.ShowDate(now.day(), now.month(), now.year());
+      }
+      else 
+      {
+        display_.Blink();
+        display_.ShowDate(temp_day_, temp_month_, temp_year_);
+      }
+      break;
+    case eALARMTIME:
+      if(not change_time_index_) 
+      {
+        display_.NoBlink();
+        display_.ShowTime(alarmClock_.getAlarmHours(), alarmClock_.getAlarmMinutes());
+      }
+      else 
+      {
+        display_.Blink();
+        display_.ShowTime(temp_hour_, temp_minute_);
+      }
+      break;
+    case eALARMONOFF:
+      display_.ShowAlarmOnOff(alarmClock_.getAlarmSet());
+      break;
+  }
+
 }
 
 
@@ -142,22 +200,24 @@ void Menu::setTempDateTime()
 
 void Menu::handleIndexClock()
 {
-  if(change_time_index_=TimeIndex::eNOTIME)
+  if(change_time_index_==TimeIndex::eNOTIME)
   {
+    Serial.print(button_menu_.getPressed(), DEC);
+    Serial.print("\n");
     if(button_menu_.getPressed()) incrementMenuIndex();
-    else if(button_menu_.getTimePressed() < 2000)
+    else if(button_menu_.getLongPressed())
     {
       incrementChangeTimeIndex();
       setTempDateTime();
     }
   }
-  else if(change_time_index_=eHOUR)
+  else if(change_time_index_==eHOUR)
   {
     if(button_menu_.getPressed()) incrementChangeTimeIndex();
     else if(button_up_.getPressed()) incrementHour();
     else if(button_down_.getPressed()) decrementHour();
   }
-  else if(change_time_index_=eMINUTE)
+  else if(change_time_index_==eMINUTE)
   {
     if(button_menu_.getPressed()) 
     {
@@ -173,28 +233,28 @@ void Menu::handleIndexClock()
 
 void Menu::handleIndexDate()
 {
-  if(change_date_index_=eNODATE)
+  if(change_date_index_==eNODATE)
   {
     if(button_menu_.getPressed()) incrementMenuIndex();
-    else if(button_menu_.getTimePressed() < 2000)
+    else if(button_menu_.getLongPressed())
     {
       incrementChangeTimeIndex();
       setTempDateTime();
     }
   }
-  else if(change_date_index_=eYEAR)
+  else if(change_date_index_==eYEAR)
   {
     if(button_menu_.getPressed()) incrementChangeDateIndex();
     else if(button_up_.getPressed()) incrementYear();
     else if(button_down_.getPressed()) decrementYear();
   }
-  else if(change_date_index_=eMONTH)
+  else if(change_date_index_==eMONTH)
   {
     if(button_menu_.getPressed()) incrementChangeDateIndex();
     else if(button_up_.getPressed()) incrementMonth();
     else if(button_down_.getPressed()) decrementMonth();
   }
-  else if(change_date_index_=eDAY)   
+  else if(change_date_index_==eDAY)   
   {
     if(button_menu_.getPressed()) 
     {
@@ -210,10 +270,10 @@ void Menu::handleIndexDate()
 
 void Menu::handleIndexAlarmTime()
 {
-  if(change_time_index_=TimeIndex::eNOTIME)
+  if(change_time_index_==TimeIndex::eNOTIME)
   {
     if(button_menu_.getPressed()) incrementMenuIndex();
-    else if(button_menu_.getTimePressed() < 2000)
+    else if(button_menu_.getLongPressed())
     {
       incrementChangeTimeIndex();
       temp_hour_ = alarmClock_.getAlarmHours();
@@ -221,13 +281,13 @@ void Menu::handleIndexAlarmTime()
       
     }
   }
-  else if(change_time_index_=eHOUR)
+  else if(change_time_index_==eHOUR)
   {
     if(button_menu_.getPressed()) incrementChangeTimeIndex();
     else if(button_up_.getPressed()) incrementHour();
     else if(button_down_.getPressed()) decrementHour();
   }
-  else if(change_time_index_=eMINUTE)
+  else if(change_time_index_==eMINUTE)
   {
     if(button_menu_.getPressed()) 
     {

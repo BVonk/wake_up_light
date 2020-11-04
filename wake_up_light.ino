@@ -12,7 +12,7 @@
 #include "LCDDisplay.hpp"
 #include <LiquidCrystal_I2C.h>
 #include "AlarmClock.h"
-#include "Menu.h"
+#include "menu.h"
 #include "PushButton.hpp"
 
 
@@ -25,15 +25,16 @@ PushButton button1;
 PushButton button2;
 PushButton button3;
 PushButton button4;
-Menu menu(RTC, alarmClock, button1, button2, button3, button4);
 LCDDisplay display(lcd);
+Menu menu(display, RTC, alarmClock, button1, button2, button3, button4);
+
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int alarmHours = 19, alarmMinutes = 38;
 int ledPin = 6;
-const uint16_t update_rate_ms = 50;
+const uint16_t update_rate_ms = 25;
 
-
+int i;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -70,6 +71,7 @@ void setup() {
   alarmClock.setAlarmLength(1800);
   alarmClock.enableAlarm();
   print_time(now);
+  i=0;
   display.Init(update_rate_ms);
 }
 
@@ -82,7 +84,7 @@ void loop() {
   button1.update();
   button2.update();
   button3.update();
-  button4.update();
+//  button4.update();
 
   // Update menu
   menu.update();
@@ -104,11 +106,14 @@ void loop() {
   {
     setLightBrightness(alarmClock.getAlarmProgress());
   }
+  
+//  display.ShowTime(now.hour(), now.minute());
 
-  display.ShowTime(now.hour(), now.minute());
+  delay(update_rate_ms);
 
-
-//  print_time(now);
+  if(i<255) i++;
+  else i=0;
+  setLightBrightness((float) (i) / (float) 255);
 }
 
 
@@ -126,7 +131,7 @@ void loop() {
 //  int a=1;
 //}
 
-//
+
 void setLightBrightness(float factor)
 {
     float brightness = factor * 255.0; 
