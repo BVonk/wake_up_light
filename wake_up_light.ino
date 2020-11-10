@@ -14,8 +14,11 @@
 #include "AlarmClock.h"
 #include "menu.h"
 #include "PushButton.hpp"
+#include <TM1637TinyDisplay.h>
+#include "SegmentDisplay.hpp"
 
 
+TM1637TinyDisplay tinydisplay(10, 11);
 //LiquidCrystal lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 RTC_DS3231 RTC;
@@ -25,12 +28,13 @@ PushButton button1;
 PushButton button2;
 PushButton button3;
 PushButton button4;
-LCDDisplay display(lcd);
+//LCDDisplay display(lcd);
+SegmentDisplay display(tinydisplay);
 Menu menu(display, RTC, alarmClock, button1, button2, button3, button4);
 
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-int alarmHours = 19, alarmMinutes = 38;
+int alarmHours = 6, alarmMinutes = 15;
 int ledPin = 6;
 const uint16_t update_rate_ms = 25;
 
@@ -67,12 +71,13 @@ void setup() {
     // The default display shows the date and time
   Serial.print("RTC Started\n");
   DateTime now = RTC.now();
-  alarmClock.setAlarmTime(6, 10);
-  alarmClock.setAlarmLength(1800);
-  alarmClock.enableAlarm();
+  alarmClock.setAlarmTime(6, 15);
+  alarmClock.setAlarmLength(1200);
+//  alarmClock.enableAlarm();
   print_time(now);
   i=0;
   display.Init(update_rate_ms);
+//  tinydisplay.setBrightness(0x0f);
 }
 
 
@@ -84,8 +89,10 @@ void loop() {
   button1.update();
   button2.update();
   button3.update();
-//  button4.update();
-
+  button4.update();
+//  tinydisplay.showNumberDec(1, 0b01000000, true, 2, 0);
+//  tinydisplay.showNumberDec(2, 0b01000000, true, 2, 2);
+//  tinydisplay.showNumberDec(1234, 0b01000000);
   // Update menu
   menu.update();
 
@@ -110,10 +117,10 @@ void loop() {
 //  display.ShowTime(now.hour(), now.minute());
 
   delay(update_rate_ms);
-
-  if(i<255) i++;
-  else i=0;
-  setLightBrightness((float) (i) / (float) 255);
+//
+//  if(i<255) i++;
+//  else i=0;
+//  setLightBrightness((float) (i) / (float) 255);
 }
 
 

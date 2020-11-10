@@ -50,7 +50,7 @@ void PushButton::update()
     long_pressed_ = false;
     time_pressed_ = 0;
   }
-//  Serial.print("pressed ");
+//  Serial.print("pressed \n");
 //  Serial.print(pressed, DEC);
 //  Serial.print(" short ");
 //  Serial.print(pressed_, DEC);

@@ -7,7 +7,7 @@ AlarmClock::AlarmClock()
 ,alarm_minute_(0)
 ,alarm_time_triggered_(0)
 ,alarm_progress_(0)
-,alarm_length_seconds_(1800)
+,alarm_length_seconds_(1200)
 {
 }
 

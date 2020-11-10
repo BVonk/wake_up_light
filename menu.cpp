@@ -25,11 +25,11 @@ Menu::~Menu()
 void Menu::update()
 {
   uint8_t temp_index_=index_;
-  Serial.print("Index ");
-  Serial.print(index_, DEC);
-  Serial.print(" ");
-  Serial.print(change_time_index_, DEC);
-  Serial.print("\n");
+//  Serial.print("Index ");
+//  Serial.print(index_, DEC);
+//  Serial.print(" ");
+//  Serial.print(change_time_index_, DEC);
+//  Serial.print("\n");
  
   DateTime now = RTC_.now();
   switch (index_)
@@ -202,8 +202,8 @@ void Menu::handleIndexClock()
 {
   if(change_time_index_==TimeIndex::eNOTIME)
   {
-    Serial.print(button_menu_.getPressed(), DEC);
-    Serial.print("\n");
+//    Serial.print(button_menu_.getPressed(), DEC);
+//    Serial.print("\n");
     if(button_menu_.getPressed()) incrementMenuIndex();
     else if(button_menu_.getLongPressed())
     {
