@@ -96,6 +96,11 @@ void Menu::update()
       break;
   }
 
+  if(button_light_.getPressed())
+  {
+    display_.ToggleBacklight();
+  }
+
 }
 
 

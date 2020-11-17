@@ -27,12 +27,12 @@ void PushButton::update()
   {
     pressed_ = false;
     long_pressed_= false;
-    if(time_pressed_ <= 2000)
+    if(time_pressed_ <= 1000)
     {
       time_pressed_ += update_rate_ms_;
     }
   }
-  else if(not pressed && time_pressed_ > 2000)
+  else if(not pressed && time_pressed_ > 1000)
   {
     long_pressed_=true;
     pressed_=false;

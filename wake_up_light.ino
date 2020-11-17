@@ -36,7 +36,7 @@ Menu menu(display, RTC, alarmClock, button1, button2, button3, button4);
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 int alarmHours = 6, alarmMinutes = 15;
 int ledPin = 6;
-const uint16_t update_rate_ms = 25;
+const uint16_t update_rate_ms = 100;
 
 int i;
 
@@ -56,8 +56,6 @@ void setup() {
 	pinMode(LED_BUILTIN, OUTPUT);
 
   Serial.print("Starting RTC\n");
-  // Initialize RTC
-//  RTC.begin();
   if (! RTC.begin()) {
     Serial.print("Couldn't find RTC\n");
   }

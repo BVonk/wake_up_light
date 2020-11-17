@@ -12,6 +12,9 @@ public:
     virtual void ShowTime(uint8_t hour, uint8_t minute) = 0;
     virtual void ShowDate(uint8_t day, uint8_t Month, uint16_t year) = 0;
     virtual void ShowAlarmOnOff(bool alarm_on) = 0;
+    virtual void Backlight() = 0;
+    virtual void NoBacklight() = 0;
+    virtual void ToggleBacklight() = 0;
     virtual void Clear();
     virtual void Blink() = 0;
     virtual void NoBlink() = 0;

@@ -1,11 +1,11 @@
 #include "LCDDisplay.hpp"
-//#include <LiquidCrystal_I2C.h>
 
 
 LCDDisplay::LCDDisplay(LiquidCrystal_I2C& display)
 :blink_time_(0)
 ,blink_on_(false)
 ,blink_mode_on_(false)
+,backlight_(true)
 ,display_(display)
 {
     update_rate_ms_ = 20;
@@ -25,6 +25,29 @@ void LCDDisplay::Init(uint16_t update_rate_ms)
 void LCDDisplay::Clear()
 {
   display_.clear();
+}
+
+void LCDDisplay::Backlight()
+{
+  display_.backlight();
+}
+void LCDDisplay::NoBacklight()
+{
+  display_.noBacklight();
+}
+
+void LCDDisplay::ToggleBacklight()
+{
+  if(backlight_)
+  {
+    backlight_=false;
+    display_.noBacklight();
+  }
+  else
+  {
+    backlight_=true;
+    display_.backlight();
+  }
 }
 
 void LCDDisplay::ShowTime(uint8_t hour, uint8_t minute)

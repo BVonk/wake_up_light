@@ -17,12 +17,35 @@ void SegmentDisplay::Init(uint16_t update_rate_ms)
 {
     update_rate_ms_ = update_rate_ms;
     display_.setBrightness(0x0f);
+    Backlight();
     display_.clear();
 }
 
 void SegmentDisplay::Clear()
 {
   display_.clear();
+}
+
+void SegmentDisplay::Backlight()
+{
+  display_.setBrightness(0x0f);
+  backlight_=true;
+}
+void SegmentDisplay::NoBacklight()
+{
+  display_.setBrightness(0x00);
+  backlight_=false;
+}
+void SegmentDisplay::ToggleBacklight()
+{
+  if(backlight_)
+  {
+    NoBacklight();
+  }
+  else
+  {
+    Backlight();
+  }
 }
 
 void SegmentDisplay::ShowTime(uint8_t hour, uint8_t minute)
@@ -46,7 +69,6 @@ void SegmentDisplay::ShowDate(uint8_t day, uint8_t month, uint16_t year)
 
 void SegmentDisplay::ShowAlarmOnOff(bool alarm_on)
 {
-    display_.clear();
     if(alarm_on)
     {
         display_.showString("ON");
